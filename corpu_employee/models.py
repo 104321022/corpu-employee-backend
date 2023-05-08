@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.conf import settings
 
 class Course(models.Model):
     course_code = models.CharField(primary_key=True, max_length=9, unique=True)
@@ -31,4 +31,14 @@ class UserLocation(models.Model):
     address = models.CharField(max_length=99)
 
     def __str__(self):
-        return self.address;
+        return self.address
+
+class Department(models.Model):
+    departmant_id = models.CharField(primary_key=True, max_length=9, unique=True)
+    name = models.CharField(max_length=19)
+    manager = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name + ' - ' + self.manager.first_name + ' ' + self.manager.last_name
+
+

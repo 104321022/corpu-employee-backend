@@ -1,8 +1,13 @@
-from django.http import JsonResponse
 from .models import Course
 from .models import User
+from .models import UserLocation
+from .models import Department
+
 from .serializers import CourseSerializer
 from .serializers import UserSerializer
+from .serializers import UserLocationSerializer
+from .serializers import DepartmentSerializer
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -16,7 +21,7 @@ def course_list(request, format=None):
     # Serialize
     serializer = CourseSerializer(courses, many=True)
     # return Json
-    return Response({"courses": serializer.data})
+    return Response({"courses": serializer.data}, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
@@ -76,4 +81,39 @@ def signup(request, format=None):
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(["GET"])
+def get_user_location(request, format=None):
+    try:
+        user_location = UserLocation.objects.get(
+            user_id=request.data["user_id"]
+        )
+    except UserLocation.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = UserLocationSerializer(user_location)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+      
+@api_view(["POST"])
+def update_user_location(request, format=None):
+    serializer = UserLocationSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["POST"])
+def add_department(request, format=None):
+    serializer = DepartmentSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(["GET"])
+def get_departments(request, format=None):
+    departments = Department.objects.all()
+    serializer = DepartmentSerializer(departments, many=True)
+    return Response({"departments": serializer.data}, status=status.HTTP_200_OK)
 

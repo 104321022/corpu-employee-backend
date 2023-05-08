@@ -26,6 +26,10 @@ urlpatterns = [
     path("course/<str:course_code>", views.course),
     path("signin/", views.signin),
     path("signup/", views.signup),
+    path("getUserLocation/", views.get_user_location),
+    path("updateUserLocation/", views.update_user_location),
+    path("departments/", views.get_departments),
+    path("addDepartment/", views.add_department),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
