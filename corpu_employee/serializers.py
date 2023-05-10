@@ -3,6 +3,8 @@ from .models import Course
 from .models import User
 from .models import UserLocation
 from .models import Department
+from .models import Assessment
+from .models import Timetable
 
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,4 +26,13 @@ class DepartmentSerializer(serializers.ModelSerializer):
         model = Department
         fields = ["departmant_id", "name", "manager"]
 
+class AssessmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Assessment
+        fields = ["staff_id", "employee_id", "course_code"]
+
+class TimetableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Timetable
+        fields = ["user_id", "course_code", "monday_time", "tuesday_time", "wednesday_time", "thursday_time", "friday_time"]
 

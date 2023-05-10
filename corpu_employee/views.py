@@ -2,11 +2,15 @@ from .models import Course
 from .models import User
 from .models import UserLocation
 from .models import Department
+from .models import Assessment
+from .models import Timetable
 
 from .serializers import CourseSerializer
 from .serializers import UserSerializer
 from .serializers import UserLocationSerializer
 from .serializers import DepartmentSerializer
+from .serializers import AssessmentSerializer
+from .serializers import TimetableSerializer
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -116,4 +120,65 @@ def get_departments(request, format=None):
     departments = Department.objects.all()
     serializer = DepartmentSerializer(departments, many=True)
     return Response({"departments": serializer.data}, status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+def create_assessment(request, format=None):
+    serializer = AssessmentSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(["GET"])
+def get_assessments(request, format=None):
+
+    request_data = request.data
+    try:
+        user_id = request_data['user_id']
+        assessments = Assessment.objects.get(
+            user_id=user_id
+        ).all()
+    except Assessment.DoesNotExist:
+        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+ 
+    serializer = AssessmentSerializer(assessments, many=True)
+    return Response({"assessments": serializer.data}, status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+def assessment_details(request, format=None):
+    request_data = request.data
+    try:
+        assessment = Assessment.objects.get(
+            assessment_id=request_data["id"]
+        )
+    except Assessment.DoesNotExist:
+        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = AssessmentSerializer(assessment)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+def create_timetable(request, format=None):
+    serializer = TimetableSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["GET"])
+def get_timetable(request, format=None):
+    request_data = request.data
+
+    try:
+        time_table = Timetable.objects.get(
+            course_code=request_data["course_code"]
+        )
+    except Timetable.DoesNotExist:        
+        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = TimetableSerializer(time_table)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
 
