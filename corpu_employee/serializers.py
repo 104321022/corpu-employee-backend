@@ -14,7 +14,7 @@ class CourseSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["user_id", "first_name", "last_name", "email", "contact_no", "user_type"]
+        fields = ["user_id", "first_name", "last_name", "email", "contact_no", "user_type", "details"]
 
 class UserLocationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,7 +29,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 class AssessmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assessment
-        fields = ["staff_id", "employee_id", "course_code"]
+        fields = ["staff_id", "employee_id", "course_code", "details"]
 
 class TimetableSerializer(serializers.ModelSerializer):
     class Meta:

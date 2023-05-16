@@ -20,6 +20,8 @@ class User(models.Model):
     contact_no = models.CharField(max_length=14, unique=True)
     user_type = models.CharField(max_length=9)
     password = models.CharField(max_length=19)
+    details = models.JSONField(null=True)
+
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name
@@ -47,6 +49,7 @@ class Assessment(models.Model):
     staff_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='creator')
     employee_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applicant')
     course_code = models.ForeignKey(Course, on_delete=models.CASCADE)
+    details = models.JSONField(null=True)
 
     def __str__(self):
         return 'Assessment for ' + self.course_code.course_title + ' - ' + ', Creator: ' + self.staff_id.first_name + ' ' + self.staff_id.last_name + ' - ' +  ', Applicant: ' + self.employee_id.first_name + ' ' + self.employee_id.last_name
