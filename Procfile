@@ -1,1 +1,1 @@
-web gunicorn corpu-employee-backend.wsgi:application --log-file -
+web gunicorn corpu_employee.wsgi:application --log-file -
