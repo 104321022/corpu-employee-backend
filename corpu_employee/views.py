@@ -140,20 +140,20 @@ def get_assessments(request, format=None):
     request_data = request.data
     assessments = Assessment.objects.all()
     serializer = AssessmentSerializer(assessments, many=True)
-    try:        
+    assessments_list = []
+    try:
         if request_data['user_type'] == 'staff':
-            assessments = serializer.data.get(
-                staff_id=request_data['user_id']
-            ).all()
+            for item in serializer.data:
+                if item['staff_id'] == request_data['user_id']:
+                    assessments_list.append(item)
         else:
-            assessments = serializer.data.get(
-                employee_id=request_data['user_id']
-            ).all()
+            for item in serializer.data:
+                if item['employee_id'] == request_data['user_id']:
+                    assessments_list.append(item)
     except Assessment.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
  
-    serializer = AssessmentSerializer(assessments, many=True)
-    return Response({"assessments": serializer.data}, status=status.HTTP_200_OK)
+    return Response({"assessments": assessments_list}, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
 def assessment_details(request, format=None):
