@@ -139,16 +139,18 @@ def get_assessments(request, format=None):
 
     request_data = request.data
     try:
-        user_id = request_data['user_id']
-        user_type = request_data['user_type']
-        if user_type == 'staff':
-            assessments = Assessment.objects.get(
-                staff_id=user_id
-            ).all()
+        assessments = Assessment.objects.all()
+        if not assessments:
+            return Response({"assessments": []}, status=status.HTTP_200_OK)
         else:
-            assessments = Assessment.objects.get(
-                employee_id=user_id
-            ).all()
+            if request_data['user_type'] == 'staff':
+                assessments = assessments.get(
+                    staff_id=request_data['user_id']
+                ).all()
+            else:
+                assessments = assessments.get(
+                    employee_id=request_data['user_id']
+                ).all()
     except Assessment.DoesNotExist:
         return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
  
