@@ -138,8 +138,9 @@ def create_assessment(request, format=None):
 def get_assessments(request, format=None):
 
     request_data = request.data
+    assessments = Assessment.objects.all()
+    serializer = AssessmentSerializer(assessments, many=True)
     try:
-        assessments = Assessment.objects.all()
         if not assessments:
             return Response({"assessments": []}, status=status.HTTP_200_OK)
         else:
@@ -154,7 +155,6 @@ def get_assessments(request, format=None):
     except Assessment.DoesNotExist:
         return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
  
-    serializer = AssessmentSerializer(assessments, many=True)
     return Response({"assessments": serializer.data}, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
