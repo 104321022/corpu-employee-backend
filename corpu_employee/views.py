@@ -153,8 +153,9 @@ def get_assessments(request, format=None):
                     employee_id=request_data['user_id']
                 ).all()
     except Assessment.DoesNotExist:
-        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_404_NOT_FOUND)
  
+    serializer = AssessmentSerializer(assessments, many=True)
     return Response({"assessments": serializer.data}, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
