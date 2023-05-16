@@ -1,0 +1,1 @@
+web gunicorn corpu-employee-backend.wsgi:application --log-file -
