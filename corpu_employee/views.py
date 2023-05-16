@@ -74,14 +74,18 @@ def signin(request, format=None):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     serializer = UserSerializer(user)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    user_data = serializer.data
+    del user_data['password']
+    return Response(user_data, status=status.HTTP_200_OK)
 
 @api_view(["POST"])
 def signup(request, format=None):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        user_data = serializer.data
+        del user_data['password']
+        return Response(user_data, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
