@@ -152,7 +152,17 @@ def get_assessments(request, format=None):
                     assessments_list.append(item)
     except Assessment.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
- 
+
+    for assessment in assessments_list:
+        staff_user=User.objects.get(
+            user_id=assessment['staff_id']
+        )
+        assessment['staff_name'] = staff_user.first_name + ' ' + staff_user.last_name
+        employee_user=User.objects.get(
+            user_id=assessment['employee_id']
+        )
+        assessment['employee_name'] = employee_user.first_name + ' ' + employee_user.last_name
+    
     return Response({"assessments": assessments_list}, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
