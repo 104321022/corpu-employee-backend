@@ -166,6 +166,36 @@ def get_assessments(request, format=None):
     return Response({"assessments": assessments_list}, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
+def get_employees_for_staff(request, format=None):
+    request_data = request.data
+    staff_id = request_data['staff_id']
+
+    employees = []
+    assessments_serializer = AssessmentSerializer(Assessment.objects.all(), many=True)
+    assessments = []
+    for assessment in assessments_serializer.data:
+        if assessment['staff_id'] == staff_id:
+            assessments.append(assessment)
+
+    for assessment in assessments:
+        data = {}
+        user = User.objects.get(
+            user_id=assessments['employee_id']
+        )
+        course = Course.objects.get(
+            course_code=assessments['course_code']
+        )
+        data['employee_id'] = user.user_id
+        data['employee_name'] = user.first_name + ' ' + user.last_name
+        data['course_code'] = assessments['course_code']
+        data['course_title'] = course.course_title
+
+        employees.append(data)
+
+    return Response({"employees": employees}, status=status.HTTP_200_OK)
+    
+
+@api_view(["GET"])
 def assessment_details(request, format=None):
     request_data = request.data
     try:
