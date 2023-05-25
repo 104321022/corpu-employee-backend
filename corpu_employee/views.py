@@ -90,6 +90,23 @@ def signup(request, format=None):
         return Response(user_data, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(["POST"])
+def update_profile(request, format=None):
+    try:
+        user = User.objects.filter(
+            user_id=request.data['user_id']
+        )
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    user.update(
+        first_name=request.data['first_name'],
+        last_name=request.data['last_name'],
+        contact_no=request.data['contact_no'],
+        details=request.data['details'],
+    )
+    return Response(request.data, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
 def get_users_for_assessment(request, format=None):
