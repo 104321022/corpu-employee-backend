@@ -252,6 +252,13 @@ def get_applications_for_course(request, format=None):
 
     for job_application in job_applications_serializer.data:
         if job_application['course_code'] == request_data['course_code']:
+            user = User.objects.get(
+                user_id=job_application['applicant_id']
+            )
+            job_application_map = {}
+            job_application_map = job_application
+            job_application_map['first_name'] =user.first_name
+            job_application_map['last_name'] =user.last_name
             job_applications_list.append(job_application)
 
     return Response({"applications": job_applications_list}, status=status.HTTP_200_OK)
