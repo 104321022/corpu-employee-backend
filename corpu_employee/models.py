@@ -78,3 +78,19 @@ class Timetable(models.Model):
         else:
             return 'Timetable of: ' + self.course_code.course_title + ', Created by: ' + self.user_id.first_name + ' ' + self.user_id.last_name
 
+class JobApplication(models.Model):
+    applicant_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    course_code = models.ForeignKey(Course, on_delete=models.CASCADE)
+    date = models.CharField(max_length=29)
+    status = models.CharField(max_length=9, null=True)
+    data = models.JSONField(null=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['applicant_id', 'course_code'], name='user_course_application'
+            )
+        ]
+
+    def __str__(self):
+        return 'Job Application of ' + self.applicant_id.first_name + ' ' + self.applicant_id.last_name + ' for course ' + self.course_code.course_title

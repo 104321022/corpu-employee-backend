@@ -5,6 +5,7 @@ from .models import UserLocation
 from .models import Department
 from .models import Assessment
 from .models import Timetable
+from .models import JobApplication
 
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,3 +37,7 @@ class TimetableSerializer(serializers.ModelSerializer):
         model = Timetable
         fields = ["user_id", "course_code", "monday_time", "tuesday_time", "wednesday_time", "thursday_time", "friday_time"]
 
+class JobApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobApplication
+        fields = ["applicant_id", "course_code", "date", "status", "data"]

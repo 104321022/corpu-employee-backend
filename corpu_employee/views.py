@@ -4,6 +4,7 @@ from .models import UserLocation
 from .models import Department
 from .models import Assessment
 from .models import Timetable
+from .models import JobApplication
 
 from .serializers import CourseSerializer
 from .serializers import UserSerializer
@@ -11,6 +12,7 @@ from .serializers import UserLocationSerializer
 from .serializers import DepartmentSerializer
 from .serializers import AssessmentSerializer
 from .serializers import TimetableSerializer
+from .serializers import JobApplicationSerializer
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -88,6 +90,16 @@ def signup(request, format=None):
         return Response(user_data, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["GET"])
+def get_users_for_assessment(request, format=None):
+    users = User.objects.all()
+    serializer = UserSerializer(users, many=True)
+    users_list = []
+    for user in serializer.data:
+        if user.user_type == "Employee":
+            users_list.append(user)
+    return Response({"3": users_list}, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
 def get_user_location(request, format=None):
@@ -231,4 +243,35 @@ def get_timetable(request, format=None):
     serializer = TimetableSerializer(time_table)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view(["GET"])
+def get_applications_for_course(request, format=None):
+    request_data = request.data
+
+    job_applications_serializer = JobApplicationSerializer(JobApplication.objects.all(), many=True)
+    job_applications_list = []
+
+    for job_application in job_applications_serializer.data:
+        if job_application['course_code'] == request_data['course_code']:
+            job_applications_list.append(job_application)
+
+    return Response({"applications": job_applications_list}, status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+def post_job_application(request, format=None):
+    serializer = JobApplicationSerializer(data=request.data)
+    if serializer.is_valid():
+        try:
+            job_application_response = {}
+            job_application = JobApplication.objects.get(
+                applicant_id=request.data['applicant_id'],
+                course_code=request.data['course_code']
+            )
+            job_application_response['data'] = JobApplicationSerializer(job_application).data
+            job_application_response['message'] = 'Application already exists'
+            return Response(job_application_response, status=status.HTTP_400_BAD_REQUEST)
+        except JobApplication.DoesNotExist:            
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

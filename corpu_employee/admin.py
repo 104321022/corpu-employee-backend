@@ -5,6 +5,7 @@ from .models import UserLocation
 from .models import Department
 from .models import Assessment
 from .models import Timetable
+from .models import JobApplication
 
 admin.site.register(Course)
 admin.site.register(User)
@@ -12,4 +13,5 @@ admin.site.register(UserLocation)
 admin.site.register(Department)
 admin.site.register(Assessment)
 admin.site.register(Timetable)
+admin.site.register(JobApplication)
 

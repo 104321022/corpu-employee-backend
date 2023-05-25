@@ -35,6 +35,9 @@ urlpatterns = [
     path("assessmentDetails/", views.assessment_details),
     path("createTimetable/", views.create_timetable),
     path("getTimetable/", views.get_timetable),
+    path("getUsersForAssessment", views.get_users_for_assessment),
+    path("getApplicationsForCourse", views.get_applications_for_course),
+    path("postJobApplication", views.post_job_application),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
