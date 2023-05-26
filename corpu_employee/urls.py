@@ -33,6 +33,8 @@ urlpatterns = [
     path("createAssessment/", views.create_assessment),
     path("getAssessments/", views.get_assessments),
     path("assessmentDetails/", views.assessment_details),
+    path("submitAssessment", views.submit_assessment),
+    path("approveAssessment", views.approve_assessment),
     path("createTimetable/", views.create_timetable),
     path("getTimetable/", views.get_timetable),
     path("getUsersForAssessment", views.get_users_for_assessment),

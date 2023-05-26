@@ -191,6 +191,10 @@ def get_assessments(request, format=None):
             user_id=assessment['employee_id']
         )
         assessment['employee_name'] = employee_user.first_name + ' ' + employee_user.last_name
+        course=Course.objects.get(
+            course_code=assessment['course_code']
+        )
+        assessment['course_title'] = course.course_title
     
     return Response({"assessments": assessments_list}, status=status.HTTP_200_OK)
 
@@ -232,9 +236,49 @@ def assessment_details(request, format=None):
             assessment_id=request_data["id"]
         )
     except Assessment.DoesNotExist:
-        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_404_NOT_FOUND)
     
     serializer = AssessmentSerializer(assessment)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+def submit_assessment(request, format=None):
+    request_data = request.data
+    try:
+        assessment = Assessment.objects.filter(
+            assessment_id=request_data["assessment_id"]
+        )
+    except Assessment.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    assessment.update(
+        details=request_data["details"]
+    )
+    assessment_result = Assessment.objects.get(
+        assessment_id=request_data["assessment_id"]
+    )
+    serializer = AssessmentSerializer(assessment_result)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+def approve_assessment(request, format=None):
+    request_data = request.data
+    try:
+        assessment = Assessment.objects.filter(
+            assessment_id=request_data["assessment_id"]
+        )
+    except Assessment.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    detailss = request_data["details"]
+    detailss['status']='Approved'
+    assessment.update(
+        details=detailss
+    )
+    assessment_result = Assessment.objects.get(
+        assessment_id=request_data["assessment_id"]
+    )
+    serializer = AssessmentSerializer(assessment_result)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(["POST"])

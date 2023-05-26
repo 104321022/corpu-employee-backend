@@ -30,7 +30,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 class AssessmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assessment
-        fields = ["staff_id", "employee_id", "course_code", "details"]
+        fields = ["assessment_id", "staff_id", "employee_id", "course_code", "details"]
 
 class TimetableSerializer(serializers.ModelSerializer):
     class Meta:
