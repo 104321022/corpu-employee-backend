@@ -35,6 +35,7 @@ urlpatterns = [
     path("assessmentDetails/", views.assessment_details),
     path("submitAssessment", views.submit_assessment),
     path("approveAssessment", views.approve_assessment),
+    path("rejectAssessment", views.reject_assessment),
     path("createTimetable/", views.create_timetable),
     path("getTimetable/", views.get_timetable),
     path("getUsersForAssessment", views.get_users_for_assessment),

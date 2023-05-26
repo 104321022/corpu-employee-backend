@@ -282,6 +282,27 @@ def approve_assessment(request, format=None):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(["POST"])
+def reject_assessment(request, format=None):
+    request_data = request.data
+    try:
+        assessment = Assessment.objects.filter(
+            assessment_id=request_data["assessment_id"]
+        )
+    except Assessment.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    detailss = request_data["details"]
+    detailss['status']='Rejected'
+    assessment.update(
+        details=detailss
+    )
+    assessment_result = Assessment.objects.get(
+        assessment_id=request_data["assessment_id"]
+    )
+    serializer = AssessmentSerializer(assessment_result)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(["POST"])
 def create_timetable(request, format=None):
     serializer = TimetableSerializer(data=request.data)
     if serializer.is_valid():
