@@ -263,16 +263,20 @@ def submit_assessment(request, format=None):
 @api_view(["POST"])
 def approve_assessment(request, format=None):
     request_data = request.data
+    assessment_to_update = Assessment.objects.filter(
+        assessment_id=request_data["assessment_id"]
+    )
     try:
-        assessment = Assessment.objects.filter(
+        assessment = Assessment.objects.get(
             assessment_id=request_data["assessment_id"]
         )
     except Assessment.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
-    detailss = request_data["details"]
+    serializer = AssessmentSerializer(assessment)
+    detailss = serializer.data['details']
     detailss['status']='Approved'
-    assessment.update(
+    assessment_to_update.update(
         details=detailss
     )
     assessment_result = Assessment.objects.get(
@@ -284,16 +288,20 @@ def approve_assessment(request, format=None):
 @api_view(["POST"])
 def reject_assessment(request, format=None):
     request_data = request.data
+    assessment_to_update = Assessment.objects.filter(
+        assessment_id=request_data["assessment_id"]
+    )
     try:
-        assessment = Assessment.objects.filter(
+        assessment = Assessment.objects.get(
             assessment_id=request_data["assessment_id"]
         )
     except Assessment.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
-    detailss = request_data["details"]
+    serializer = AssessmentSerializer(assessment)
+    detailss = serializer.data['details']
     detailss['status']='Rejected'
-    assessment.update(
+    assessment_to_update.update(
         details=detailss
     )
     assessment_result = Assessment.objects.get(
